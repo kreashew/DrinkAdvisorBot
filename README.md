@@ -15,6 +15,6 @@ DrinkAdvisorBot — Telegram-бот, который помогает наход�
 ## Запуск проекта
 
 1. Клонируй репозиторий:
-```bash
 git clone https://github.com/kreashew/DrinkAdvisorBot.git
 cd DrinkAdvisorBot
+
