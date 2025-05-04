@@ -1,6 +1,5 @@
 import unittest
 
-# Импортируй свои функции, если используешь настоящий drinks.py:
 # from drinks import get_info, get_recipe, search_drinks
 
 # Для демонстрации — мок-данные и функции:
