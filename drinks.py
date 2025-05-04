@@ -38,3 +38,7 @@ def get_by_ingredient(ingredient: str) -> str:
 def get_random() -> str:
     name = random.choice(list(DRINKS.keys()))
     return f"{name.title()} — {DRINKS[name]['info']}"
+
+def get_all_drinks() -> str:
+    names = sorted([name.title() for name in DRINKS.keys()])
+    return "Доступные напитки:\n" + "\n".join(names)
