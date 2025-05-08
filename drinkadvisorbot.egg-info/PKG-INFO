@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: drinkadvisorbot
+Version: 1.0.0
+Summary: Telegram-бот, помощник по напиткам
+Author: Egor
+Requires-Python: >=3.8
+Requires-Dist: python-telegram-bot==20.3
+Requires-Dist: python-dotenv==1.0.1
