@@ -26,8 +26,32 @@
 
 ## 📦 Запуск проекта
 
-1. Клонируй репозиторий:
+Клонируй репозиторий:
 
 ```bash
 git clone https://github.com/kreashew/DrinkAdvisorBot.git
 cd DrinkAdvisorBot
+```
+Установка зависимостей
+```
+pip install -r requirements.txt
+```
+Запуск
+```
+python bot/main.py
+```
+## 🐳 Запуск через Docker
+
+```bash
+# Сборка контейнера
+docker build -t drinkbot .
+```
+С использованием.env
+```
+docker run --env-file .env drinkbot
+```
+## 📦 Тесты
+
+```bash
+python -m unittest discover tests
+```
