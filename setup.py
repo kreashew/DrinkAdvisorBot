@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="drinkadvisorbot",
-    version="1.0.0",
+    version="1.1.0",
     description="Telegram-бот, помощник по напиткам",
     author="Egor",
     packages=find_packages(),

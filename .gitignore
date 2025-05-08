@@ -21,3 +21,5 @@ ENV/
 
 # Mac OS
 .DS_Store
+load_data.py
+fix_json.py

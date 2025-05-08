@@ -1,0 +1,7 @@
+README.md
+setup.py
+drinkadvisorbot.egg-info/PKG-INFO
+drinkadvisorbot.egg-info/SOURCES.txt
+drinkadvisorbot.egg-info/dependency_links.txt
+drinkadvisorbot.egg-info/requires.txt
+drinkadvisorbot.egg-info/top_level.txt

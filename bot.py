@@ -8,17 +8,14 @@ from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 )
-import drinks  # drinks.yaml подключается через drinks.py
+import drinks
 
 # Загружаем drinks.json
 BASE_PATH = os.path.dirname(__file__)
 JSON_PATH = os.path.join(BASE_PATH, "drinks.json")
 
-# Читаем как текст, исправляем ошибки с \ и парсим
-
 with open(JSON_PATH, "r", encoding="utf-8") as f:
     content = f.read()
-    # Экранируем все одиночные \, которые не являются допустимыми escape-последовательностями
     content = re.sub(r'\\(?![ntr"\\/bfu])', r'\\\\', content)
     DRINKS = json.loads(content)
 
@@ -43,9 +40,15 @@ async def log_command(update: Update, context: ContextTypes.DEFAULT_TYPE, comman
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await log_command(update, context, "/start")
-    keyboard = [[InlineKeyboardButton("Показать команды 📋", callback_data="show_commands")]]
+    keyboard = [
+        [InlineKeyboardButton("🔁 Случайный напиток", callback_data="random_drink")],
+        [InlineKeyboardButton("📋 Список напитков", callback_data="list_drinks")],
+        [InlineKeyboardButton("🔍 Поиск по ингредиенту", callback_data="search_prompt")],
+        [InlineKeyboardButton("📖 Получить рецепт", callback_data="recipe_prompt")],
+        [InlineKeyboardButton("❓ Помощь", callback_data="help_info")]
+    ]
     await update.message.reply_text(
-        "Привет! Я DrinkAdvisorBot 🍹\nНажми кнопку ниже, чтобы увидеть список команд:",
+        "Привет! Я DrinkAdvisorBot 🍹\nВыбери, что хочешь сделать:",
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
@@ -85,7 +88,7 @@ async def cocktails(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await log_command(update, context, "/cocktails")
     if context.args:
         ingredient = " ".join(context.args)
-        await update.message.reply_text(drinks.search_by_ingredient(ingredient))
+        await update.message.reply_text(drinks.get_by_ingredient(ingredient))
     else:
         await update.message.reply_text("Укажи ингредиент: /cocktails <ингредиент>")
 
@@ -99,8 +102,8 @@ async def random_cocktail(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def list_drinks(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await log_command(update, context, "/list")
-    names = list(drinks.DRINKS.keys())
-    await update.message.reply_text("📋 Все напитки:\n" + "\n".join(names))
+    await update.message.reply_text(drinks.get_all_drinks())
+
 
 
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -113,7 +116,8 @@ async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    if query.data == "show_commands":
+
+    if query.data == "help_info":
         await query.message.reply_text(
             "/start - Запуск бота\n"
             "/info <название> - Информация о напитке\n"
@@ -121,9 +125,18 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "/cocktails <ингредиент> - Поиск по ингредиенту\n"
             "/random - Случайный напиток\n"
             "/list - Список всех напитков\n"
-            "/help - Справка\n"
             "/stop - Остановка бота"
         )
+    elif query.data == "random_drink":
+        all_names = list(drinks.DRINKS.keys())
+        choice = random.choice(all_names)
+        await query.message.reply_text(f"🎲 Случайный напиток: {choice}\n\n" + drinks.get_info(choice))
+    elif query.data == "list_drinks":
+        await query.message.reply_text(drinks.get_all_drinks())
+    elif query.data == "search_prompt":
+        await query.message.reply_text("Введите команду:\n/cocktails <ингредиент>")
+    elif query.data == "recipe_prompt":
+        await query.message.reply_text("Введите команду:\n/recipe <название напитка>")
 
 
 # --- main ---
@@ -141,7 +154,7 @@ def main():
     app.add_handler(CommandHandler("stop", stop))
     app.add_handler(CallbackQueryHandler(button_handler))
 
-    print("🤖 Бот запущен...")
+    print("Бот запущен...")
     app.run_polling()
 
 
